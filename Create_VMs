@@ -1,0 +1,58 @@
+---
+- hosts: all
+  gather_facts: false
+  connection: local
+  user: remote
+  sudo: true
+
+  vars_prompt:
+    - name: "vcenter_hostname"
+      prompt: "Enter vcenter hostname"
+      private: no
+      default: "vcsa"
+    - name: "vcenter_user"
+      prompt: "Enter vcenter username"
+      private: no
+    - name: "vcenter_pass"
+      prompt: "Enter vcenter password"
+      private: yes
+
+  vars:
+    datacenter: 'DATACENTER'
+    esxi_hostname: '00.00.00.00'
+    notes: 'Created by Ansible'
+
+  tasks:
+    - vmware_guest:
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_user }}"
+        password: "{{ vcenter_pass }}"
+        template: 'TEMPLATE-NAME'
+        state: poweredon
+        name: "{{ host }}"
+        folder: /folder/location
+        datacenter: 'DATACENTER'
+        disk:
+         - size_gb: "{{ drive }}"
+           type: thin
+           datastore: "{{ datastore }}"
+           autoselect_datastore: false
+        networks:
+         - name: "{{ network }}"
+           ip: "{{ IP }}"
+           netmask: 00.00.0.0
+           gateway: 00.00.00.00
+           dns_servers:
+           - 00.00.00.00
+           - 00.00.00.00
+        customization:
+          dns_servers:
+           - 00.00.00.00
+           - 00.00.00.00
+          domain: domain.com
+        hardware:
+          memory_mb: "{{ memory }}"
+          num_cpus: "{{ cpucount }}"
+          scsi: paravirtual
+        cluster: Production
+        guest_id: "{{ osid }}"
