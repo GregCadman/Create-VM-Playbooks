@@ -1,0 +1,64 @@
+---
+- hosts: new
+  gather_facts: true
+  connection: smart
+
+  vars_prompt:
+    - name: "Username"
+      prompt: "Enter Username"
+      private: no
+
+    - name: "Password"
+      prompt: "Enter Password"
+      private: yes
+
+  tasks:
+    - name: "Install Software"
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+        - krb5-user
+        - samba
+        - krb5-config
+        - winbind
+        - libpam-winbind
+        - libnss-winbind
+
+    - name: "Copy Master Krb Configs"
+      copy:
+        src: /home/ansible/src/krb5.conf
+        dest: /etc/krb5.conf
+        owner: root
+        group: root
+        mode: 0777
+
+    - name: "Copy Master Samba Configs"
+      copy:
+        src: /home/ansible/src/smb.conf
+        dest: /etc/samba/smb.conf
+        owner: root
+        group: root
+        mode: 0777
+
+    - name: "Set correct hostname in Samba"
+      replace:
+        path: /etc/samba/smb.conf
+        regexp: havadae
+        replace: '{{ ansible_hostname }}'
+        backup: yes
+
+    - name: "Kinit user"
+      shell: echo "{{ Password }}" | kinit "{{ Username }}"
+
+    - name: "Join Domain"
+      shell: echo "{{ Password }}" | net ads join -U "{{ Username }}"
+
+    - name: "Copy Master Nsswitch Config"
+      copy:
+        src: /home/ansible/src/nsswitch.conf
+        dest: /etc/nsswitch.conf
+        owner: root
+        group: root
+        mode: 0777
