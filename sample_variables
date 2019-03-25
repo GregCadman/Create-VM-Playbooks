@@ -1,0 +1,8 @@
+[New-vms]
+MachineName drive='80' datastore='MachineName-STORE' network='NIC' memory='4096' cpucount='4' osid='Ubuntu64guest' host='MachineName'
+
+MachineName2 drive='100' datastore='MachineName2-STORE' network='NIC' memory='4096' cpucount='4' osid='Ubuntu64guest' host='MachineName2'
+
+MachineName3 drive='80' datastore='MachineName3-STORE' network='NIC' memory='8192' cpucount='6' osid='Ubuntu64guest' host='MachineName3'
+
+MachineName4 drive='80' datastore='MachineName4-STORE' network='NIC' memory='4096' cpucount='4' osid='Ubuntu64guest' host='MachineName4'
